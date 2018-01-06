@@ -1,10 +1,10 @@
- function [rr, tcp] = rrgen_2003(seed, vector_length, prob_ectopy, prob_noise, pathToRepo)
+ function [rr, tcp] = rrgenV3_wrapper(seed, vector_length, prob_ectopy, prob_noise, pathToRepo)
 %   
 %   OVERVIEW:
 %       Matlab wrapper for calling compiled rrgen executable
 %
 %       First, run:
-%           gcc -Wall rrgen_2003.c -lm -o rrgen_2003
+%           gcc -Wall rrgenV3.c -lm -o rrgenV3
 %   
 %   REFERENCE
 %
@@ -20,11 +20,11 @@
 %
 %   REPO
 %       https://github.com/cliffordlab/rrgen
+%  
+%   REFERENCES
+%   Please refer to C code this function calls for more details:
+%   https://github.com/cliffordlab/CPDToolbox/blob/master/artificialDataAnalysis/rrGenerator/rrgenV3.c
 %
-%   AUTHORS
-% 		Erik Reinertsen <er@gatech.edu>
-%       Ayse Selin Cakmak <acakmak3@gatech.edu>
-
 
 % Initialize constants for rrgen
 if nargin < 4
@@ -47,7 +47,7 @@ if vector_length < 200
     vector_length = 200;
 end
 
-command = [pathToRepo filesep 'artificialDataAnalysis' filesep 'rrGenerator' filesep 'rrgen_2003_v2' ' ' num2str(seed) ' ' num2str(vector_length) ' ' num2str(prob_ectopy) ' ' num2str(prob_noise)];
+command = [pathToRepo filesep 'artificialDataAnalysis' filesep 'rrGenerator' filesep 'rrgenV3' ' ' num2str(seed) ' ' num2str(vector_length) ' ' num2str(prob_ectopy) ' ' num2str(prob_noise)];
 
 % Call rrgen2 via system and save output
 [~, systemout] = system(command);

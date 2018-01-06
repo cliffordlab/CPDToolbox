@@ -21,19 +21,19 @@ install_package("stringr")
 + Install NAG MATLAB toolbox from following address:
 https://www.nag.com/content/downloads-nag-toolbox-matlab-versions
 
-+ The executable "rrgen_2003_v2" is compiled for macOS. For other operating systems, follow these steps:
++ The executable "rrgenV3" is compiled for macOS. For other operating systems, follow these steps:
 
 1. cd into rrGenerator folder
 
-2. Delete `rrgen_2003_v2` since this executable is for mac
+2. Delete `rrgenV3` since this executable is for mac
 
-3. Compile `rrgen_2003_v2.c` into executable:
+3. Compile `rrgenV3.c` into executable:
 
-    `gcc -Wall rrgen_2003_v2.c -lm -o rrgen_2003_v2`
+    `gcc -Wall rrgenV3.c -lm -o rrgenV3`
 
-4. Test the executable by calling `rrgen_2003` from the terminal, using the number `1` as a seed, and setting max elements to `200`:  
-    `./rrgen_2003_v2 1 200` % For mac computer  <br />
-    `:rrgen_2003.exe_v2 1 200`% For windows computer <br />
+4. Test the executable by calling `rrgenV3` from the terminal, using the number `1` as a seed, and setting max elements to `200`:  
+    `./rrgenV3 1 200` % For mac computer  <br />
+    `:rrgenV3 1 200` % For windows computer <br />
 
 You should see output printed to the terminal. <br />
 

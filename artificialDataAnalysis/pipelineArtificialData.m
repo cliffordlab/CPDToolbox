@@ -59,8 +59,8 @@ for iterCounter = 1:settings.iterations
     % Generate a random vector length between 1e3 and 9e3
     vector_length = 1000;
 	
-    % Create RR time series with 'rrgen.m' function (compiled from c file)
-    [data, tcp] = rrgen_2003(seed, vector_length, 0, 0, pathToRepo);
+    % Create RR time series with 'rrgen_sys' exe (compiled from c file)
+    [data, tcp] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo);
 
     % Can also specify probability of ectopy and noise: rrgen_2003(seed, vector_length, prob_ectopy, prob_noise);
     

@@ -1,17 +1,22 @@
 
 /* ========================================================
- * rrgen_sys.c
+ * rrgenV3.c
  * 
  * Authors:    Patrick McSharry <mcsharry@maths.ox.ac.uk>
  *             Gari Clifford <gari@gatech.edu>
  * 
- * This is a modification of rrgen.c that only prints output
+ * Please refer to following link for source:
+ * https://stuff.mit.edu/~gari/CODE/RRGEN/cinc2002/rrgenV3.c
+ * https://stuff.mit.edu/~gari/CODE/RRGEN/cinc2002/
+ * 
+ * This is a modification of rrgenV3.c that prints output
  * to the system stdout instead of generating files.
  * It is designed to be called from within a Matlab wrapper.
- * Eventually it should be turned into a MEX-file.
+ *
+ * Modifications from original version is indicated in the code.
  *
  * To compile and test as a C++ executable:
- *      gcc -Wall rrgen_sys.c -lm -o rrgen_sys
+ *      gcc -Wall rrgen.c -lm -o rrgenV3
  *
  * ======================================================== */
 
@@ -709,6 +714,8 @@ void initialize(long seed, long vector_length, float Pe, float Pn,
 
 	time = (long)(trpeaks[i]);
     
+    // %%%%%% Modified by Erik Reinertsen
+
         // Write to array 
         changepoints[i-Nt-Nb] = 1; // 1 means state change
         sleepstates[i-Nt-Nb] = state[i]; 
@@ -724,6 +731,8 @@ void initialize(long seed, long vector_length, float Pe, float Pn,
 
 	// increment counter for data entry
 	counter = counter + 1;
+   // %%%%%% End of modification
+    
    }
    Nbeats = i;
 
@@ -799,6 +808,9 @@ int main(int argc, char **argv)
     float Pn   = 0.0048;    /* Probability of noise ~ 16 per hr */
     long atol();
     
+    // %%%%%% Modified by Erik Reinertsen
+    // After this modification, prints changepoints to console
+    
     // If too few arguments, exit
     if (argc < 2) {
         printf("Insufficient arguments\n");
@@ -811,7 +823,7 @@ int main(int argc, char **argv)
     if (argc > 2)
 	vector_length = atol(argv[2]);
     else 
-      vector_length=100;
+      vector_length=100;     
 
     /*
     if(vector_length<100) 
@@ -860,7 +872,7 @@ int main(int argc, char **argv)
                 changepoints[i],
                 sleepstates[i]); 
 
-        // ?
+        // 
 	tsp = ts;
 
         // Increment index
@@ -870,4 +882,6 @@ int main(int argc, char **argv)
     // Free memory    
     free_vector(changepoints,1,vector_length);
     free_vector(sleepstates,1,vector_length);
+    
+    // %%%%%% End of modification
 }
