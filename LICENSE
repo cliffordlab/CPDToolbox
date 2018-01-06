@@ -1,6 +1,6 @@
 BSD 3-Clause License
 
-Copyright (c) 2017, Clifford Lab
+Copyright (C) 2017, Ayse Cakmak and Gari Clifford
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -34,3 +34,8 @@ https://www.nag.com/termsandconditions/nag-software-licence-t-and-c.pdf
 
 BCP R Package:
 https://cran.r-project.org/web/licenses/GPL-3
+
+Precision Recall Curves:
+Copyright (c) 2010, Kay H. Brodersen and Cheng Soon Ong
+All rights reserved.
+https://www.mathworks.com/matlabcentral/fileexchange/29250-estimating-a-smooth-precision-recall-curve?focused=5172247&tab=function
