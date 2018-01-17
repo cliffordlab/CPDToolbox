@@ -68,7 +68,7 @@ Add where R is located to your MATLAB environment <br />
 setenv('PATH', [getenv('PATH'),':','/usr/local/bin']); 
 
 + In artificial data analysis, no data is generated
-Make sure your rrgen_2003_v2 executable is suitable for your computer type. 
+Make sure your rrgenV3 executable is suitable for your computer type. 
 If not, delete this and re compile as decribed above.
 
 ## Useful Links

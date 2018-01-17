@@ -1,4 +1,4 @@
-function pipelineArtificialData(pathToRepo)
+%function pipelineArtificialData(pathToRepo)
 %   
 %   Overview:
 %   	Loads artificially generated data and applies change point
@@ -31,8 +31,8 @@ cd(pathToRepo);
 settings.tolerance = 5;     % tolerance in seconds for determining if change point is detected;
                             % if estimated change point (ecp) is within true change point (tcp),
                             % the change point is detected.
-settings.act = 1;           % 1: work with actigraphy data 
-settings.figs = 0;          % 1: plot tcp & ecp on time series
+settings.act = 0;           % 1: work with actigraphy data 
+settings.figs = 1;          % 1: plot tcp & ecp on time series
 settings.iterations = 1000;
 
 % Choose parameter set according to each method
@@ -55,16 +55,34 @@ for iterCounter = 1:settings.iterations
     
     % Create random seed
     seed = rand(1)*1e3;
-
-    % Generate a random vector length between 1e3 and 9e3
-    vector_length = 1000;
-	
-    % Create RR time series with 'rrgen_sys' exe (compiled from c file)
-    [data, tcp] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo);
-
-    % Can also specify probability of ectopy and noise: rrgen_2003(seed, vector_length, prob_ectopy, prob_noise);
     
-    time = cumsum(data); % Time of RR time series is found by cumulative summation
+    % Generate artificial data
+    if settings.act ~= 1
+        % 24 hour RR time series
+        vector_length = 86400;
+
+        % Create RR time series with 'rrgen_sys' exe (compiled from c file)
+        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo);
+        
+        % Calculate sleep length
+        sleepLength = (sleepEnd - sleepStart) / 3600;
+        
+        hold off;
+        plot(data); hold on; plot(sleepStart,data(sleepStart),'ro'); hold on; plot(sleepEnd,data(sleepEnd),'ro');
+
+        % Extract sleep portion of data 
+        data = data(sleepStart:sleepEnd);
+                
+        % Adjust changepoints for sleep portion
+        tcp_idx = find((tcp > sleepStart) & (tcp < sleepEnd));
+        tcp = tcp(tcp_idx) - sleepStart;
+        
+        time = cumsum(data); % Time of RR time series is found by cumulative summation
+    else
+        vector_length = 24000;
+        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo);
+        time = cumsum(data); 
+    end
     
     % Converting rrgen data to actigraphy data
     if settings.act == 1
@@ -122,11 +140,7 @@ for iterCounter = 1:settings.iterations
     
     %% Modified Bayesian Online Changepoint Detection
         
-    rl = mbocd(data, lambda, 'gamma');
-    
-    % Locate estimated changepoints
-    [~, ecp] = findpeaks(rl(:,1));
-    ecp(end) = []; % last index is errenous
+    ecp = msegWin(data, lambda, 30000);
     
     % Plot true and estimated change points
     if settings.figs == 1    
@@ -141,9 +155,7 @@ for iterCounter = 1:settings.iterations
     
     %% BOCD Original Code
     
-    [~, maxes] = bocd(data, lambda2); 
-    
-    [~, ecp] = findpeaks(maxes(:,1));
+    ecp = segWin(data,lambda2, 30000);
     
     % Plot true and estimated change points
     if settings.figs == 1    
@@ -367,4 +379,4 @@ set(gca, 'fontsize', 16);
 
 tightfig;
 
-end
+%end
