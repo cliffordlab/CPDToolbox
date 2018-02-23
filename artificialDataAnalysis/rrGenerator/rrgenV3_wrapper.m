@@ -1,5 +1,5 @@
  function [rr, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, ...
-                                        prob_ectopy, prob_noise, pathToRepo)
+                                        prob_ectopy, prob_noise, pathToRepo, act)
 %   
 %   OVERVIEW:
 %       Matlab wrapper for calling compiled rrgen executable
@@ -14,6 +14,7 @@
 %       vector_length - length of RR output
 %       prob_ectopy   - probability of a beat being ectopic
 %       prob_noise    - probability of a beat being noisy
+%       act           - option to work with actigraphy data
 %
 %   OUTPUT
 %       rr - RR interval time series
@@ -105,7 +106,12 @@ else
     end
 end
 
-sleepStart = sleep(1);
-sleepEnd = sleep(end-1);
+if act ~= 1
+    sleepStart = sleep(1);
+    sleepEnd = sleep(end-1);
+else
+    sleepStart = [];
+    sleepEnd = [];
+end
 
 end 

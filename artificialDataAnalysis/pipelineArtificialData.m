@@ -31,8 +31,8 @@ cd(pathToRepo);
 settings.tolerance = 5;     % tolerance in seconds for determining if change point is detected;
                             % if estimated change point (ecp) is within true change point (tcp),
                             % the change point is detected.
-settings.act = 0;           % 1: work with actigraphy data 
-settings.figs = 1;          % 1: plot tcp & ecp on time series
+settings.act = 1;           % 1: work with actigraphy data 
+settings.figs = 0;          % 1: plot tcp & ecp on time series
 settings.iterations = 1000;
 
 % Choose parameter set according to each method
@@ -62,13 +62,10 @@ for iterCounter = 1:settings.iterations
         vector_length = 86400;
 
         % Create RR time series with 'rrgen_sys' exe (compiled from c file)
-        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo);
+        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo,0);
         
         % Calculate sleep length
-        sleepLength = (sleepEnd - sleepStart) / 3600;
-        
-        hold off;
-        plot(data); hold on; plot(sleepStart,data(sleepStart),'ro'); hold on; plot(sleepEnd,data(sleepEnd),'ro');
+        sleepLength(iterCounter) = (sleepEnd - sleepStart) / 3600;
 
         % Extract sleep portion of data 
         data = data(sleepStart:sleepEnd);
@@ -80,8 +77,8 @@ for iterCounter = 1:settings.iterations
         time = cumsum(data); % Time of RR time series is found by cumulative summation
     else
         vector_length = 24000;
-        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo);
-        time = cumsum(data); 
+        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo,1);
+        time = 0:1:24000; 
     end
     
     % Converting rrgen data to actigraphy data
@@ -96,7 +93,7 @@ for iterCounter = 1:settings.iterations
         snr = 30; % choose SNR level
         data = convert_rr_to_act(data, snr);
         fprintf('Test %1.0f/%1.0f: generating actigraphy samples (length %1.0f)...\n\n', ...
-        iterCounter, settings.iterations, vector_length);
+        iterCounter, settings.iterations, length(data));
     
         % Write files so they can be tested with BCP R code later
         filename = strcat([pathToRepo filesep 'artificialDataAnalysis' filesep 'generatedData' filesep 'act' filesep 'act'],num2str(iterCounter),'.txt');
@@ -117,7 +114,7 @@ for iterCounter = 1:settings.iterations
         folder = [pathToRepo filesep 'artificialDataAnalysis' filesep 'generatedData' filesep 'rr_tcp'];
         if exist(folder, 'dir') == 0; mkdir(folder); end
         fprintf('Test %1.0f/%1.0f: generating RR samples (length %1.0f)...\n\n', ...
-        iterCounter, settings.iterations, vector_length);
+        iterCounter, settings.iterations, length(data));
         
         % Write files so they can be tested with BCP R code later
         filename = strcat([pathToRepo filesep 'artificialDataAnalysis' filesep 'generatedData' filesep 'rr' filesep 'rr'],num2str(iterCounter),'.txt');
@@ -258,8 +255,8 @@ for iterCounter = 1:settings.iterations
     close all;
     
 end 
-
-fprintf('Starting to bcp implementation in RStudio \n');
+%%
+fprintf('Starting to bcp implementation in R \n');
 
 % Make folder to store results
 folder = [pathToRepo filesep 'artificialDataAnalysis' filesep 'bcpResultsADA'];
