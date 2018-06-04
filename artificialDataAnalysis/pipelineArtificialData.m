@@ -21,7 +21,7 @@
 %   
 %   This software may be modified and distributed under the terms
 %   of the BSD license.  See the LICENSE file in this repo for details.
-
+pathToRepo = '~/repos/CPDToolbox';
 addpath(genpath(pathToRepo));
 close all;  % Close all figures
 clc;        % Clear command window
@@ -31,9 +31,9 @@ cd(pathToRepo);
 settings.tolerance = 5;     % tolerance in seconds for determining if change point is detected;
                             % if estimated change point (ecp) is within true change point (tcp),
                             % the change point is detected.
-settings.act = 1;           % 1: work with actigraphy data 
+settings.act = 0;           % 1: work with actigraphy data 
 settings.figs = 0;          % 1: plot tcp & ecp on time series
-settings.iterations = 1000;
+settings.iterations = 400;
 
 % Choose parameter set according to each method
 if settings.act == 0 % Work on RR interval time series
@@ -62,7 +62,7 @@ for iterCounter = 1:settings.iterations
         vector_length = 86400;
 
         % Create RR time series with 'rrgen_sys' exe (compiled from c file)
-        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo,0);
+        [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0.001, 0.001, pathToRepo,0);
         
         % Calculate sleep length
         sleepLength(iterCounter) = (sleepEnd - sleepStart) / 3600;
@@ -80,6 +80,8 @@ for iterCounter = 1:settings.iterations
         [data, tcp, sleepStart, sleepEnd] = rrgenV3_wrapper(seed, vector_length, 0, 0, pathToRepo,1);
         time = 0:1:24000; 
     end
+    
+    plotTimeSeries(data, time, tcp, [], '')
     
     % Converting rrgen data to actigraphy data
     if settings.act == 1
@@ -375,5 +377,14 @@ legend('boxoff');
 set(gca, 'fontsize', 16);
 
 tightfig;
+
+matrix_f1 = [[results_rmdm.f1]', ...
+              [results_bis.f1]', ...
+              [results_pelt1.f1]', ...              
+              [results_pelt2.f1]', ...
+              [results_bblocks.f1]', ...
+              results_bcp.f1, ...             
+              [results_bocdo.f1]', ...
+              [results_bocd.f1]'];
 
 %end

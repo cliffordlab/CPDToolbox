@@ -21,7 +21,7 @@ function plotTimeSeries(data, time, tcp, ecp, title_text)
 %   This software may be modified and distributed under the terms
 %   of the BSD license.  See the LICENSE file in this repo for details.
 
-figure('Position', [10 10 1200 175]);
+figure('Position', [10 10 600 200]);
 
 % Load google colors
 google_colors = loadGoogleColors();
@@ -50,7 +50,8 @@ end
 
 % Settings for the figure
 title(title_text);
-xlabel('Time from start (sec)');
+xlabel('Time(sec)')
+ylabel('RR Intervals')
 
 if isempty(ecp)
     legend({'Samples', 'Changepoints'});
@@ -67,6 +68,8 @@ end
 xlim([0 max(time)]);
 ylim([min(data) max(data)]);
 xticks(0:200:length(time));
+xlim([0 1000])
+ylim([0.2 1])
 
 % Set font size
 set(gca, 'fontsize', 18);

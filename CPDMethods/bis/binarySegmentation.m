@@ -1,4 +1,4 @@
-function ecp = binarySegmentation(data, ctype, penalty)
+function ecp = binarySegmentation(data, ctype, penalty, minThreshold)
 % 
 % Overview
 %   Implementation of Binary Segmentation algorithm. Changepoints are the
@@ -9,11 +9,13 @@ function ecp = binarySegmentation(data, ctype, penalty)
 %   ctype:  == 1: Looking for mean changes in Gaussian data
 %           == 2: Looking for variance changes in Gaussian data
 %   penalty: Penalty term, can be 'BIC', 'AIC' or Hannan-Quinn ('HQ')
+%   minThreshold: Limiting the number of returned significant changes by 
+%   applying the additional penalty to each prospective changepoint
 %
 % Output
 %   ecp: Estimated changepoints
 %
-% Reference(s)
+% Reference(s)4
 %   [1] Vostrikova, L. I. "Detection of the disorder in multidimensional 
 %   random-processes." Doklady Akademii Nauk SSSR 259.2 (1981): 270-274.
 %   [2] Chen, Jie, and Arjun K. Gupta. Parametric statistical change point 
@@ -33,9 +35,9 @@ if (ctype == 1 || ctype == 2); paramNum = 1; end
 if strcmp(penalty, 'BIC')
     beta = paramNum * log(length(data));
 elseif strcmp(penalty, 'AIC')
-
+    beta = 2 * paramNum;
 elseif strcmp(penalty, 'HQ') % Hannan-Quinn
-    
+    beta = 2 * paramNum * log(log(length(data)));
 end
 
 % Make a queue to hold intervals to be segmented
@@ -80,7 +82,7 @@ while iQueue <= length(queue)
     end
     
     % If cost of splitting is lower, split and put subsegments in queue
-    if costAll >= costMin + beta
+    if costAll >= costMin + beta + minThreshold
         if (iSig > sigStart+1) && (iSig < sigEnd-1)
             
             % Add changepoint

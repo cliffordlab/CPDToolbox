@@ -49,7 +49,7 @@ for (f in 1:length(rr_files))
   result <- accuracy(ecpTime, tcpTime, tolerance)
   
   out[f,1] <- result$TPR
-  out[f,2] <- result$FNR
+  out[f,2] <- result$f1Score
   out[f,3] <- result$PPV
   out[f,4] <- result$falsePos
 }
